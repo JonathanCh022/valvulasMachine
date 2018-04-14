@@ -1,5 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
+/* =======================================================================
+## ++ Inicio Sesion View
+========================================================================== */
+
 .login-page {
   width: 360px;
   padding: 8% 0 0;
@@ -88,13 +92,88 @@
 .container .info span .fa {
   color: #EF3B3A;
 }
+
+
 body {
-  background: #76b852; /* fallback for old browsers */
-  background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-  background: -moz-linear-gradient(right, #76b852, #8DC26F);
-  background: -o-linear-gradient(right, #76b852, #8DC26F);
-  background: linear-gradient(to left, #76b852, #8DC26F);
+  background: #056495; /* fallback for old browsers */
+  background: -webkit-linear-gradient(right, #056495, #8DC26F);
+  background: -moz-linear-gradient(right, #056495, #8DC26F);
+  background: -o-linear-gradient(right, #056495, #8DC26F);
+  background: linear-gradient(to left, #056495, #8DC26F);
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
+}
+
+/* =======================================================================
+## ++ Carga Archivos View
+========================================================================== */
+
+
+.panel-page {
+  width: 60%;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+
+.form-main {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 660px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+#svg{
+   fill: white;
+   margin-top: 7%;
+}
+
+span{
+  margin-left: 8px; 
+}
+
+.box{
+  padding: 4.25rem 1.25rem;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+    max-width:90%;
+    font-size: 1.45em;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    color: #f1e5e6;
+    background-color:#059dd0;
+    display: inline-block;
+    width: 300px;
+    height: 60px;
+
+
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #056495;
+}
+
+.inputfile + label {
+  cursor: pointer; /* "hand" cursor */
+}
+
+.inputfile:focus + label {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
 }

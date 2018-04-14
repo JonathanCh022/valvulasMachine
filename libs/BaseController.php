@@ -15,6 +15,10 @@ Class BaseController{
 	        {
 	        	$controllerName = $_GET['controlador'] . 'Controller';
 	        }
+            elseif (! empty($_POST['controlador'])) 
+            {
+               $controllerName = $_POST['controlador'] . 'Controller';
+            }
 	    else{
 
 	    	$controllerName = "IndexController";
@@ -25,6 +29,10 @@ Class BaseController{
 	        {
 	        	$actionName = $_GET['accion'];
 	        }
+            elseif (! empty($_POST['accion'])) 
+            {
+               $actionName = $_POST['accion'];
+            }
 	    else{
 	    	
 	    	$actionName = "index";

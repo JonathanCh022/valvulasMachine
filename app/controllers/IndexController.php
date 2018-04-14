@@ -17,21 +17,40 @@ class IndexController
         $usuario = new IndexModel();
 
         //Le pedimos al modelo todos los items
-        $listado = $usuario->listadoTotal();
+        $listado = $usuario->listadoTotal();        
         
- 
         //Pasamos a la vista toda la información que se desea representar
         $data['listado'] = $listado ;
 
-
+        //Miramos si se ha logeado , si no es asi mostramos el index normal
+        $this->validar($listado);
  
-        //Finalmente presentamos nuestra plantilla
-        $this->view->show("InicioSesionView.php", $data);
+        
     }
  
-    public function agregar()
+    public function validar($datos)
     {
-        echo 'Aquí incluiremos nuestro formulario para insertar items';
+        $logeado = 1;
+
+        if ( isset($_POST['username'])  && isset($_POST['password'])) {
+
+            while($item = $datos->fetch())
+                {
+                    if ($item['username'] == $_POST['username'] && $item['pass'] == ($_POST['password']) ){
+                        $logeado = 0;
+                    }                    
+                }
+
+            if ($logeado == 0) {
+                header("Location: index.php?controlador=Archivo&accion=cargar");
+            }else{
+                $this->view->show("InicioSesionView.php", $datos);
+            }
+            
+        }else{
+            //Finalmente presentamos nuestra plantilla
+        $this->view->show("InicioSesionView.php", $datos);
+        }
     }
 }
 
