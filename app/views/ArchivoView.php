@@ -21,7 +21,7 @@
       </div>      
     </form>    
 
-    <input type="button" value="Subir archivo" onclick="submitForms()" />
+    <input type="button" class="submitbutton" value="Subir archivo" onclick="submitForms()" />
 
   </div>
 </div>    

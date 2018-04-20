@@ -105,6 +105,7 @@ body {
   -moz-osx-font-smoothing: grayscale;      
 }
 
+
 /* =======================================================================
 ## ++ Carga Archivos View
 ========================================================================== */
@@ -133,7 +134,7 @@ body {
    margin-top: 7%;
 }
 
-span{
+.box span{
   margin-left: 8px; 
 }
 
@@ -176,4 +177,69 @@ span{
 .inputfile:focus + label {
   outline: 1px dotted #000;
   outline: -webkit-focus-ring-color auto 5px;
+}
+
+.submitbutton{
+   max-width:90%;
+    font-size: 1.45em;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    color: #f1e5e6;
+    background-color:#059dd0;
+    display: inline-block;
+    width: 300px;
+    height: 60px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+}
+
+.submitbutton:focus,  .submitbutton:hover{
+  background-color: #056495;
+}
+
+.submitbutton:focus{
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+/* =======================================================================
+## ++ Carga Archivos View
+========================================================================== */
+
+.box2{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 25%;
+  height: 300px;
+
+}
+
+
+.submitbuttones{
+   max-width:90%;
+    font-size: 1.45em;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    color: #f1e5e6;
+    background-color:#059dd0;
+    display: inline-block;
+    width: 300px;
+    height: 60px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    margin: 1%;
+
+    
+}
+
+.submitbuttones p{
+      
+      margin-top: 6%;
+    }
+
+.submitbuttones:focus,  .submitbuttones:hover{
+  background-color: #056495;
 }

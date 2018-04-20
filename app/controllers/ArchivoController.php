@@ -22,6 +22,8 @@ class ArchivoController
 
             $informacion = $this->validar( $_FILES['archivo']['tmp_name'] );
 
+            $infoValvulas->crearTabla($informacion);            
+
             }else{
                 $mensaje = "Archivo subido no valido, recuerda solo se recibe extension .csv";
                 echo $mensaje;
