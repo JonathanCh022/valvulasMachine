@@ -18,7 +18,7 @@ class ArchivoModel
         $string = "";
 
         foreach ($columnas as $value) {
-                $string .= ", " .$value." VARCHAR(30) NOT NULL ";
+                $string .= ", " .$value." VARCHAR(150) NOT NULL ";
             }        
         
         if ($this->existeTabla($nombreTabla)) 
@@ -34,12 +34,17 @@ class ArchivoModel
         
         //Ejecutamos el query, si se realiza la tabla no existe
         if ($consulta->execute()) {
+
+
+
              $this->guardarlog('Crea la tabla '.$nombreTabla.' en la base de datos');
              header("Location: index.php?controlador=Menu&accion=mostrar");
         } else {
         
         print_r($consulta->errorInfo());
         }
+
+        $this->llenarTabla($array,$nombreTabla);
     }
 
     public function existeTabla($nombre){
@@ -47,7 +52,7 @@ class ArchivoModel
         $query = $this->db->prepare('Show tables like "'.$nombre. '"');        
         $query->execute();
         $cantidad  = $query->rowCount();
-        echo $cantidad;
+        
 
         if ($cantidad > 0) {
             return true;
@@ -60,6 +65,60 @@ class ArchivoModel
         $query = $this->db->prepare('DROP TABLE IF EXISTS '.$nombre.'');        
         $query->execute();
     }
+
+    public function llenarTabla($array , $nombre){
+
+         $columnas = $array[0];
+         $col= "( ";
+         $band1 = 0;
+        foreach ($columnas as $value) {
+                if ($band1 == 0) {
+                    $col .= " ".$value." ";
+                }else{
+                     $col .= ", ".$value." ";
+                }
+                
+                $band1++;
+            }
+
+        $col .= " )";
+
+        $String = "";
+        $cont = 0;
+        $ban = 0;
+
+        foreach ($array as $value) {
+            if ($ban != 0) {
+                if ($ban == 1 ) {
+                $String .= "( ";
+            }else {
+                $String .= ",( ";
+            }
+            
+            foreach ($value as $dato) {
+                if ($cont == 0) {
+                    $String .= "' ".$dato." '";
+                    $cont++;
+                }else{
+                    $String .= ",' ".$dato." '";
+                }
+               
+            }
+            $String .= " )";
+            $cont = 0;
+            
+            }    
+            $ban++;        
+
+        }
+       
+        $sql = "INSERT INTO ".$nombre. $col ." VALUES ". $String;       
+        
+        $query = $this->db->prepare($sql);  
+        var_dump($query->execute());
+        print_r($query->errorInfo());
+    }
+
 
     public function guardarlog($accion){
 

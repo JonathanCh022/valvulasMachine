@@ -16,7 +16,7 @@
       <div class="box2"> 
          
          <a href="index.php" class="submitbuttones"> <p>Cerrar Sesion</p></a>
-         <a href="" class="submitbuttones"> <p>Calcular Matriz de riesgo</p></a>
+         <a href="index.php?controlador=Matriz&accion=mostrar" class="submitbuttones"> <p>Calcular Matriz de riesgo</p></a>
          <a href="" class="submitbuttones"> <p>Calendario</p></a>
          <a href="index.php?controlador=Historial&accion=mostrar" class="submitbuttones"> <p>Historial</p></a>
 

@@ -42,7 +42,7 @@ class ArchivoController
                 $datos = array();
 
                 $a= 0;
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) // Lectura de los registros del CSV
+                while (($data = fgetcsv($handle, 0, ",")) !== FALSE) // Lectura de los registros del CSV
                 {
                     
                     foreach($data as $row) {
