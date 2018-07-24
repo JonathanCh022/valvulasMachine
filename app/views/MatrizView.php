@@ -18,6 +18,8 @@
   <div class="form-matriz-main">
     <div class="">
       <h2> Confirmacion de parametros </h2>
+
+      
       
     </div>
 
@@ -95,9 +97,7 @@
             <td> {{ x.Documentacion_registro_adecuado_y_detallado_de_las_actividades }}</td>
             <td> {{ x.ANO_ULTIMO_OVERHAUL_CUERPO_Y_ACTUADOR }}</td>
             <td> {{ x.FACTOR_DE_MANTENIBILIDAD }}</td>
-            <td> {{ x.CALIFICACION_MANTENIBILIDAD }}</td>         
-
-            
+            <td> {{ x.CALIFICACION_MANTENIBILIDAD }}</td>                 
           </tr>
 
           
