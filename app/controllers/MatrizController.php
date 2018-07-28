@@ -13,15 +13,9 @@ class MatrizController
     //Incluye el modelo que corresponde
         require $_SERVER['DOCUMENT_ROOT'].'/ProjectoMaquinas/app/models/MatrizModel.php';        
 
-        $matrizmod = new MatrizModel();
+        $matrizmod = new MatrizModel();         
 
-
-         $a = $matrizmod->calcular_MTFB();
-         $b = $matrizmod->calcular_indicador_temperatura();
-         $c = $matrizmod->calcular_corrosividad_agresividad();
-
-
-         $matrizmod->calcular_PW_FactorForma_Vidacaracteristica($a , $b, $c);
+         $matrizmod->calular_costo_total_holecost();
     
 
         //Finalmente presentamos nuestra plantilla
