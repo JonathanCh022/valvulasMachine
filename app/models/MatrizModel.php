@@ -749,14 +749,14 @@ public function calcular_factor_material(){
 
 
 
-public function calular_costo_total_holecost(){
+public function calcular_costo_total_holecost(){
 
 	$valve_function_description = array();
 	$mop_psi = array();
 	$size = array();
 	$costo_total_reparo = array();
 
-	$query = $this->db->prepare('SELECT VALVE_FUNCTION_DESCRIPTION , MOP_MAX_OPERATING_PRESSURE_PSI , SIZE_INLET FROM valvulas ');        
+	$query = $this->db->prepare('SELECT VALVE_FUNCTION_DESCRIPTION , MOP_MAX_OPERATING_PRESSURE_PSI , SIZE_INLET FROM valvulas ');
 	$query->execute();
 
 
@@ -925,7 +925,7 @@ public function calular_costo_total_holecost(){
 						}
 
 			        break;
-			    case "PL-Plug Valve":
+			    case "PL-PlugValve":
 			        
 			        if ( $size[$i] < 6 ) {
 							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
@@ -934,24 +934,720 @@ public function calular_costo_total_holecost(){
 						}
 
 			        break;			    
-				}
+		}
 			
 	}
 
-	echo count($costo_total_reparo);
+	return $costo_total_reparo;
+}
+
+public function calcular_coste_dano_componente(){
+	$costo_holecost = $this->calcular_costo_total_holecost();
+	$factor_material = $this->calcular_factor_material();
+	$coste_daño_component = array();
+
+	$i = 0;
+	$length = count($costo_holecost);				
+
+	for($i;$i<$length;$i++) {
+		$coste_daño_component[] = ($costo_holecost[$i] * 0.0000306) / ($factor_material[$i] * 0.00003) ;
+	}
+
+	return $coste_daño_component;
+
+
+}
+
+public function calcular_consecuencia_area(){
+	$coste_daño_component = $this->calcular_coste_dano_componente();
+	$normal_temp = array();
+	$line_service = array();
+	$capacidad_alivio = array();
+	$consecuencia_area = array();
+
+
+	$query = $this->db->prepare('SELECT Normal_Tem , LINE_SERVICE_Fluid FROM valvulas ');        
+	$query->execute();
+
+
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) 
+		{			
+			$normal_temp[] = $row['Normal_Tem'];
+			$line_service[] = $row['LINE_SERVICE_Fluid'];			
+		}
+
+	$i = 0;
+	$length = count($normal_temp);				
+
+	for($i;$i<$length;$i++) {
+
+		$valor_temp = ((( $coste_daño_component[$i] + 14.7 )* 2006.079 ) / sqrt( $normal_temp[$i] + 460 ) )/ 3600 ;
+		$capacidad_alivio[] = $valor_temp;
+
+		switch (trim($line_service[$i])) {
+			    case "NATURALGAS":
+			    case "SOURGAS":
+			    case "NATURALGASWET":
+			        $consecuencia_area[] = ($valor_temp ** 0.95) * 280;
+			        break;
+			    case "CRUDEOIL":
+			    case "CRUDE/NATGAS":
+			    case "CRUDE/WATER/NATGAS":
+			    case "DIESEL":
+			    case "OIL/WATER":			        
+			    case "PRODUCEDWATER":	
+			        $consecuencia_area[] = ($valor_temp ** 0.9) * 103;
+			        break;			       
+			    case "AIR":
+			        $consecuencia_area[] = ($valor_temp ** 1) * 420;
+			        break;
+			    case "CHEMINYECT":
+			        $consecuencia_area[] = ($valor_temp ** 0.89) * 203;
+			        break;
+			    case "ESPUMACONTRAINCENDIO":
+			        $consecuencia_area[] = ($valor_temp ** 1) * 313.6;
+			        break;
+			     case "FUELGAS":
+			        $consecuencia_area[] = ($valor_temp ** 0.95) * 280;
+			        break;
+			    case "GLYCOL":
+			        $consecuencia_area[] = ($valor_temp ** 1) * 108;
+			        break;
+			    case "METHANOL":
+			    case "LIQNG":
+			        $consecuencia_area[] = ($valor_temp ** 0.934) * 1751;
+			        break;			    
+			    case "NITROGEN":			        		    		        	
+			    case "WATER":
+			        $consecuencia_area[] = ($valor_temp ** 1) * 1;
+			        break;			    
+				}
+	}
+
+	return $capacidad_alivio;
+}
+
+public function calcular_costo_interrupcion_negocio(){
+
+	$valve_function_description = array();	
+	$size = array();
+	$costo_interrupcion_negocio = array();
+
+	$query = $this->db->prepare('SELECT VALVE_FUNCTION_DESCRIPTION , SIZE_INLET FROM valvulas ');
+	$query->execute();
+
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) 
+		{			
+			$valve_function_description[] = $row['VALVE_FUNCTION_DESCRIPTION'];			
+			$size[] = $row['SIZE_INLET'];				
+		}
+				
+	$i = 0;
+	$length = count($size);				
+
+	for($i;$i<$length;$i++) {
+
+		switch (trim($valve_function_description[$i])) {
+
+			    case "HV-HandValveBall":
+				     if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}
+			        break;
+			    case "HV-HandValveButterfly":
+			        
+			        if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "CK-CheckValve":
+
+			        if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "GAV-HandValveGate":
+
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}
+			        
+			        break;
+			    case "GLB-HandValveGlobe":
+
+			   		if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}
+			        
+			        break;
+			    case "HVN-HandValveNeedle":
+
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}
+			        
+			        break;
+			    case "SDV-ShutDownValve":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "SURFACESAFETYVALVE":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 4 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "EMERGENCYSHUTDOWNVALVE":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			     case "DobleBlock&BleedValve":
+			        
+			     	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "DIVERTVALVESOLENOID":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "FlowControlValve":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "PVorPCV-PressureControlValve":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "LVorLCV-LevelControlValve":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "FLOWSAFETYVALVE(CHECK)":
+			        
+			        if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "BDV-BlowDownValve":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "XXV-EmergencyShutDownValve(ESDV)":
+			        
+			    	if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 4 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 8 * 2000 * (int) $size[$i];
+						}
+
+			        break;
+			    case "PL-PlugValve":
+			        
+			        if ( $size[$i] < 6 ) {
+							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+						}else{
+							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+						}
+
+			        break;			    
+		}
+
+	}
+	var_dump($costo_interrupcion_negocio);
+
+	return $costo_interrupcion_negocio;
+
+}
+
+public function calcular_costo_lesiones_potenciales(){
+
+	$capacidad_alivio = $this->calcular_consecuencia_area();
+	$costo_lesion_potencial = array();
+
+	foreach ($capacidad_alivio as  $value) {
+		$costo_lesion_potencial[] = $value * 0.002 * 1000000 ;
+	}
+
+
+
+	return $costo_lesion_potencial;
+}
+
+public function calcular_costo_limpieza_medio_ambiente(){
+	$line_service = array();
+    $costo_limpieza_medio_ambiente = array();
+    $capacidad_alivio = $this->calcular_consecuencia_area();   	
+
+    $query = $this->db->prepare('SELECT LINE_SERVICE_Fluid FROM valvulas ');        
+	$query->execute();
+
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) 
+		{			
+			$line_service[] = $row['LINE_SERVICE_Fluid'];							
+		}
+
+	$i = 0;
+	$length = count($line_service);				
+
+	for($i;$i<$length;$i++) {	
+			
+			switch (trim($line_service[$i])) {
+			    case "NATURALGAS":
+			    case "SOURGAS":			        
+			    case "AIR":
+			    case "METHANOL":			        
+			    case "NATURALGASWET":			        
+			    case "NATURALGASSWEET":			        
+			    case "NATURALGASBITTER":			        
+			    case "NITROGEN":
+			    case "GAS":			        
+			    case "GASINJECTION":		
+			        $costo_limpieza_medio_ambiente[] = 100 * $capacidad_alivio[$i];
+			        break;
+			    case "CRUDEOIL":			        		        
+			    case "CHEMINYECT":			        
+			    case "CRUDE/NATGAS":			        
+			    case "CRUDE/WATER/NATGAS":			        
+			    case "DIESEL":			       
+			    case "ESPUMACONTRAINCENDIO":
+			    case "FUELGAS":			        
+			    case "GLYCOL":			    			        
+			    case "OIL/WATER":			        
+			    case "PRODUCEDWATER":			        
+			    case "WATER":			    		        
+			    case "LIQNG":
+			        $costo_limpieza_medio_ambiente[] = 2000 * $capacidad_alivio[$i];
+			        break;
+				}
+		}
+
+
+
+	return $costo_limpieza_medio_ambiente;
+}
+
+public function calcular_consecuencia_financiera_perdida_contencion(){
+
+	$costo_dano_componente = $this->calcular_coste_dano_componente();
+	$costo_interrupcion_negocio = $this->calcular_costo_interrupcion_negocio();
+	$costo_lesion_potencial = $this->calcular_costo_lesiones_potenciales();
+	$costo_limpieza_medio_ambiente = $this->calcular_costo_limpieza_medio_ambiente();
+	$consecuencia_financiera = array();
+	$calificacion_mantenibilidad = array();
+
+	$query = $this->db->prepare('SELECT CALIFICACION_MANTENIBILIDAD FROM valvulas ');        
+	$query->execute();
+
+
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) 
+		{			
+			$calificacion_mantenibilidad[] = $row['CALIFICACION_MANTENIBILIDAD'];				
+		}
+
+	$i = 0;
+	$length = count($calificacion_mantenibilidad);				
+
+	for($i;$i<$length;$i++) {
+		$consecuencia_financiera[] =  ($costo_dano_componente[$i] + $costo_interrupcion_negocio[$i]  + $costo_lesion_potencial[$i] +  $costo_limpieza_medio_ambiente[$i]  ) * $calificacion_mantenibilidad[$i] ;
+	}
+
+
+	return $consecuencia_financiera;
 }
 
 
+public function calcular_valores_matriz(){
+	list($prob_falla , $prob_falla_nopasa , $prob_falla_pasa) = $this->calcular_probabilidad_falla_p();
+	$consecuencia_financiera = $this->calcular_consecuencia_financiera_perdida_contencion();
+	$valoracion_riesgo = array(); 	
+
+	$i = 0;
+	$length = count($consecuencia_financiera);				
+
+	for($i;$i<$length;$i++) {
+
+		if ($prob_falla[$i] < 0.1 ) {
+			$string = "1";
+		}else if ($prob_falla[$i] >= 0.1 && $prob_falla[$i] < 0.3) {
+			$string = "2";
+		}else if ($prob_falla[$i] >= 0.3 && $prob_falla[$i] < 0.5) {
+			$string = "3";
+		}else if ($prob_falla[$i] >= 0.5 && $prob_falla[$i] < 0.7) {
+			$string = "4";
+		}else if ($prob_falla[$i] >= 0.7 && $prob_falla[$i] < 0.9) {
+			$string = "5";
+		}else if ($prob_falla[$i] >= 0.9) {
+			$string = "6";
+		}
 
 
+		if ($consecuencia_financiera[$i] < 20000 ) {
+			$string .= "F";
+		}else if ($consecuencia_financiera[$i] >= 20000 && $consecuencia_financiera[$i] < 100000) {
+			$string .= "E";
+		}else if ($consecuencia_financiera[$i] >= 100000 && $consecuencia_financiera[$i] < 1000000) {
+			$string .= "D";
+		}else if ($consecuencia_financiera[$i] >= 1000000 && $consecuencia_financiera[$i] < 50000000) {
+			$string .= "C";
+		}else if ($consecuencia_financiera[$i] >= 50000000 && $consecuencia_financiera[$i] < 500000000) {
+			$string .= "B";
+		}else if ($consecuencia_financiera[$i] >= 500000000) {
+			$string .= "A";
+		}
+
+		$valoracion_riesgo[] = $string;
+	}
+
+	return $valoracion_riesgo;
+} 
 
 
+public function retornar_campos_matriz(){
+	$valores = $this->calcular_valores_matriz();
+	$matriz = array();
+
+	$_1A = array();
+	$_2A = array();
+	$_3A = array();
+	$_4A = array();
+	$_5A = array();
+	$_6A = array();
+	$_1B = array();
+	$_2B = array();
+	$_3B = array();
+	$_4B = array();
+	$_5B = array();
+	$_6B = array();
+	$_1C = array();
+	$_2C = array();
+	$_3C = array();
+	$_4C = array();
+	$_5C = array();
+	$_6C = array();
+	$_1D = array();
+	$_2D = array();
+	$_3D = array();
+	$_4D = array();
+	$_5D = array();
+	$_6D = array();
+	$_1E = array();
+	$_2E = array();
+	$_3E = array();
+	$_4E = array();
+	$_5E = array();
+	$_6E = array();
+	$_1F = array();
+	$_2F = array();
+	$_3F = array();
+	$_4F = array();
+	$_5F = array();
+	$_6F = array();
+
+	$cont = 1;
+
+	foreach ($valores as $value) {
 
 
+		$query = $this->db->prepare("SELECT ITEM, TAG_NUMBER, PID_No FROM valvulas WHERE id = '".$cont."'");        
+		$query->execute();
+		$datos = $query->fetch(PDO::FETCH_ASSOC);
+		
+		switch ($value) {
+			case '1A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1A[] = $temp;
+				break;
+			case '2A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2A[] = $temp;
+				break;
+			case '3A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3A[] = $temp;
+				break;
+			case '4A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4A[] = $temp;
+				break;
+			case '5A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5A[] = $temp;
+				break;
+			case '6A':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6A[] = $temp;
+				break;
+			case '1B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1B[] = $temp;
+				break;
+			case '2B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2B[] = $temp;
+				break;
+			case '3B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3B[] = $temp;
+				break;
+			case '4B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4B[] = $temp;
+				break;
+			case '5B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5B[] = $temp;
+				break;
+			case '6B':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6B[] = $temp;
+				break;
+			case '1C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1C[] = $temp;
+				break;
+			case '2C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2C[] = $temp;
+				break;
+			case '3C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3C[] = $temp;
+				break;
+			case '4C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4C[] = $temp;
+				break;
+			case '5C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5C[] = $temp;
+				break;
+			case '6C':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6C[] = $temp;
+				break;
+			case '1D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1D[] = $temp;
+				break;
+			case '2D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2D[] = $temp;
+				break;
+			case '3D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3D[] = $temp;
+				break;
+			case '4D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4D[] = $temp;
+				break;
+			case '5D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5D[] = $temp;
+				break;
+			case '6D':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6D[] = $temp;
+				break;
+			case '1E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1E[] = $temp;
+				break;
+			case '2E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2E[] = $temp;
+				break;
+			case '3E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3E[] = $temp;
+				break;
+			case '4E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4E[] = $temp;
+				break;
+			case '5E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5E[] = $temp;
+				break;
+			case '6E':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6E[] = $temp;
+				break;
+			case '1F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_1F[] = $temp;
+				break;
+			case '2F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_2F[] = $temp;
+				break;
+			case '3F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_3F[] = $temp;
+				break;
+			case '4F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_4F[] = $temp;
+				break;
+			case '5F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_5F[] = $temp;
+				break;
+			case '6F':
+				$temp = [ "ITEM" => $datos['ITEM'],
+    					"TAG_NUMBER" => $datos['TAG_NUMBER'],
+    					"PID_No" => $datos['PID_No']];
+				$_6F[] = $temp;
+				break;			
+			
+		}
+	$cont++;
+	}
 
+	echo count($_6F). "--". count($_6E) . "--". count($_6D) . "--".count($_6C)  . "--". count($_6B) . "--".count($_6A) ;
+	echo "<br>";
+	echo count($_5F). "--". count($_5E) . "--". count($_5D) . "--".count($_5C)  . "--". count($_5B) . "--".count($_5A) ;
+	echo "<br>";
+	echo count($_4F). "--". count($_4E) . "--". count($_4D) . "--".count($_4C)  . "--". count($_4B) . "--".count($_4A) ;
+	echo "<br>";
+	echo count($_3F). "--". count($_3E) . "--". count($_3D) . "--".count($_3C)  . "--". count($_3B) . "--".count($_3A) ;
+	echo "<br>";
+	echo count($_2F). "--". count($_2E) . "--". count($_2D) . "--".count($_2C)  . "--". count($_2B) . "--".count($_2A) ;
+	echo "<br>";
+	echo count($_1F). "--". count($_1E) . "--". count($_1D) . "--".count($_1C)  . "--". count($_1B) . "--".count($_1A) ;
+	
 
-  
-      
+}
+     
 
 }
 ?>

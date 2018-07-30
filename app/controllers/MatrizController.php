@@ -15,7 +15,7 @@ class MatrizController
 
         $matrizmod = new MatrizModel();         
 
-         $matrizmod->calular_costo_total_holecost();
+         $matrizmod->retornar_campos_matriz();
     
 
         //Finalmente presentamos nuestra plantilla
