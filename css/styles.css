@@ -106,6 +106,14 @@ body {
 }
 
 
+#botonlog{
+    margin-left: 31%;
+}
+
+#lbl1{
+  width: 350px;
+}
+
 /* =======================================================================
 ## ++ Carga Archivos View
 ========================================================================== */
@@ -123,6 +131,17 @@ body {
   z-index: 1;
   background: #FFFFFF;
   max-width: 660px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form-main-log {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 860px;
   margin: 0 auto 100px;
   padding: 45px;
   text-align: center;
@@ -196,11 +215,14 @@ body {
 
 .submitbutton:focus,  .submitbutton:hover{
   background-color: #056495;
+  text-decoration: none;
+  color: #f1e5e6;
 }
 
 .submitbutton:focus{
   outline: 1px dotted #000;
   outline: -webkit-focus-ring-color auto 5px;
+  
 }
 
 /* =======================================================================
@@ -220,26 +242,18 @@ body {
   height: 300px;
 }
 
-.panel-matriz-page{
-    width: 80%;
-    padding: 8% 0 0;
-    margin: auto;
+.box4{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  
+  height: 500px; 
+  overflow: scroll;
 }
 
-.form-matriz-main{
-  
-    position: relative;
-    z-index: 1;
-    background: #FFFFFF;
-    max-width: 90%;
-    margin: 0 auto 100px;
-    padding: 45px;
+.box4 th, td {
     text-align: center;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-
+    vertical-align: middle;
 }
-
-
 
 .submitbuttones{
    max-width:90%;
@@ -266,4 +280,136 @@ body {
 
 .submitbuttones:focus,  .submitbuttones:hover{
   background-color: #056495;
+  text-decoration: none;
+  color: #f1e5e6;
 }
+
+
+.panel-matriz-page{
+    width: 80%;
+    padding: 8% 0 0;
+    margin: auto;
+    height: auto;
+}
+
+/* =======================================================================
+## ++ Matriz View
+========================================================================== */
+
+.form-matriz-main{
+  
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 90%;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+
+}
+
+.matriz{
+  margin-left: 15.5%;
+}
+
+.matriz a{
+  text-decoration: none;
+  color: black;
+}
+
+.fila{
+  display: flex;
+  flex-direction: row;
+}
+
+.cuadrito{
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+  border: solid;    
+  transition: transform .2s;  
+  font-weight: bold;
+}
+
+.cuadrito h4{
+  font-size: 1.2em;
+  margin-top: 30%;
+  text-align: center;
+  color: white;
+}
+
+.cuadrito p{
+  margin-top: 30%;
+  text-align: center;
+  font-size: 2em;
+}
+
+.cuadrito:hover{
+  transform: scale(1.05);
+  
+}
+
+.informativo{
+  background-color: #0099ff;
+}
+
+.verde-claro{
+  background-color: #b3ffb3;
+}
+
+.verde{
+  background-color: #00e600;
+}
+
+.amarillo{
+  background-color: #ffff00;
+}
+
+.naranja{
+  background-color: #ff9900;
+}
+
+.rojo{
+  background-color: #ff3300;
+}
+
+.tablainformativa{
+  display: none;
+}
+
+.tablainformativa td{
+  font-size: 12px;
+  
+}
+
+.btn3{
+    max-width:90%;
+    font-size: 1.45em;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    color: #f1e5e6;
+    background-color:#059dd0;
+    display: inline-block;
+    width: 90%;
+    height: 30px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+}
+
+.btn3:focus,  .btn3:hover{
+  background-color: #056495;
+  text-decoration: none;
+  color: #f1e5e6;
+}
+
+.btn3:focus{
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.datos{
+  display: none;
+}
+

@@ -23,8 +23,14 @@ class HistorialController
 
         $informacion = $historialInfo->consultarLog();
 
-        $data['informacion'] = $informacion ;
+        if (isset($_POST['valvula'])) {
+        	$historialInfo->guardarlog( $_POST['valvula'], $_POST['texto']);
+        	header("Location: index.php?controlador=Historial&accion=mostrar");
+        }
 
+        $data['informacion'] = $informacion ;
+        $data['valvulas'] = $historialInfo->consultarValvula();
+ 
 		//Finalmente presentamos nuestra plantilla
         $this->view->show("HistorialView.php", $data );
 

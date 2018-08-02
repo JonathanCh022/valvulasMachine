@@ -15,18 +15,11 @@ class MatrizController
 
         $matrizmod = new MatrizModel();         
 
-         $matrizmod->retornar_campos_matriz();
+         $matriz['matriz'] = $matrizmod->retornar_campos_matriz();
     
 
         //Finalmente presentamos nuestra plantilla
-        $this->view->show("MatrizView.php",'');    
-
-        
-
-
-        
-
-        
+        $this->view->show("MatrizView.php",$matriz);        
     }
 }
 

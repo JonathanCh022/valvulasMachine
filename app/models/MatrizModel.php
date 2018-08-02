@@ -440,7 +440,7 @@ public function calcular_radio_operacion(){
 		$length = count($set_presure);				
 
 		for($i;$i<$length;$i++) {
-			$radio_operation[] =  (int)($set_presure[$i]) / (int)($mop[$i]); 
+			$radio_operation[] =  (float)($set_presure[$i]) / (int)($mop[$i]); 
 		}
 
 		return $radio_operation;
@@ -578,7 +578,10 @@ public function calcular_probalidad_condicional_falla_demanda(){
 
 		return array($prob_condicional_falla_dem, $prob_ponderada_falla_dem_Pasainspec ,$prob_condicional_falla_dem_NoPasainspec , $int_inspeccion);	
 
-}public function calcular_probabilidad_falla_p(){
+}
+
+
+public function calcular_probabilidad_falla_p(){
 
 	list( $prob_ponderada_falla_dem , $prob_ponderada_falla_dem_Pasainspec, $prob_ponderada_falla_dem_NoPasainspec , $int_inspeccion) = $this->calcular_probalidad_condicional_falla_demanda();
 	list($factor_forma, $vida_caracteristica) = $this->calcular_PW_FactorForma_Vidacaracteristica();
@@ -621,7 +624,7 @@ public function calcular_probalidad_condicional_falla_demanda(){
 		$temp[] = (int)$valvula_abre_cierra_descont[$i];  
 		$temp[] = (int)$valvula_abre_cierra_parcialmente[$i]; 
 
-		$max = max($temp) + 1;   
+		$max = max($temp) + 1;		
 
 		if ($max == 0) {
 			$probabilidad_falla_p[] = $prob_ponderada_falla_dem[$i]  ;
@@ -634,8 +637,9 @@ public function calcular_probalidad_condicional_falla_demanda(){
 
 		$probabilidad_falla_p_Pasa[] =  1 - (exp(-(((int)($int_inspeccion[$i]) / $temp2 )** $factor_forma[$i])));
 
-
-	}
+		$max = 0;
+		$temp = [];
+		}	
 
 	return array($probabilidad_falla_p, $probabilidad_falla_p_NoPasa ,$probabilidad_falla_p_Pasa );
 }
@@ -776,161 +780,161 @@ public function calcular_costo_total_holecost(){
 
 			    case "HV-HandValveBall":
 				     if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 			        break;
 			    case "HV-HandValveButterfly":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "CK-CheckValve":
 
 			        if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "GAV-HandValveGate":
 
-			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+			    	if ( $size[$i] < 6 ){
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "GLB-HandValveGlobe":
 
 			   		if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "HVN-HandValveNeedle":
 
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "SDV-ShutDownValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "SURFACESAFETYVALVE":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "EMERGENCYSHUTDOWNVALVE":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			     case "DobleBlock&BleedValve":
 			        
 			     	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "DIVERTVALVESOLENOID":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "FlowControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "PVorPCV-PressureControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "LVorLCV-LevelControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.3 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "FLOWSAFETYVALVE(CHECK)":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "BDV-BlowDownValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "XXV-EmergencyShutDownValve(ESDV)":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1.2 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;
 			    case "PL-PlugValve":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 0.7 * (int) $mop_psi[$i] * (float) $size[$i];
 						}else{
-							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (int) $size[$i];
+							$costo_total_reparo [] = 1 * (int) $mop_psi[$i] * (float) $size[$i];
 						}
 
 			        break;			    
@@ -950,7 +954,9 @@ public function calcular_coste_dano_componente(){
 	$length = count($costo_holecost);				
 
 	for($i;$i<$length;$i++) {
-		$coste_daño_component[] = ($costo_holecost[$i] * 0.0000306) / ($factor_material[$i] * 0.00003) ;
+		$valor_temp = (($costo_holecost[$i] * 0.0000306) / 0.00003) * ($factor_material[$i]) ;
+		$coste_daño_component[] = $valor_temp;
+
 	}
 
 	return $coste_daño_component;
@@ -981,8 +987,8 @@ public function calcular_consecuencia_area(){
 
 	for($i;$i<$length;$i++) {
 
-		$valor_temp = ((( $coste_daño_component[$i] + 14.7 )* 2006.079 ) / sqrt( $normal_temp[$i] + 460 ) )/ 3600 ;
-		$capacidad_alivio[] = $valor_temp;
+		$valor_temp = ((( $coste_daño_component[$i] + 14.7 )* 2006.079 ) / sqrt( (int)$normal_temp[$i] + 460 ) )/ 3600 ;
+		$capacidad_alivio[] = $valor_temp;		
 
 		switch (trim($line_service[$i])) {
 			    case "NATURALGAS":
@@ -1051,168 +1057,167 @@ public function calcular_costo_interrupcion_negocio(){
 
 			    case "HV-HandValveBall":
 				     if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}
 			        break;
 			    case "HV-HandValveButterfly":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "CK-CheckValve":
 
 			        if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "GAV-HandValveGate":
 
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "GLB-HandValveGlobe":
 
 			   		if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "HVN-HandValveNeedle":
 
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}
 			        
 			        break;
 			    case "SDV-ShutDownValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 5 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "SURFACESAFETYVALVE":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 4 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 4 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "EMERGENCYSHUTDOWNVALVE":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 5 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			     case "DobleBlock&BleedValve":
 			        
 			     	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "DIVERTVALVESOLENOID":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "FlowControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "PVorPCV-PressureControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "LVorLCV-LevelControlValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "FLOWSAFETYVALVE(CHECK)":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 2 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 2 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "BDV-BlowDownValve":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 5 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 5 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "XXV-EmergencyShutDownValve(ESDV)":
 			        
 			    	if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 4 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 4 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 8 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 8 * 2000 * (float) $size[$i];
 						}
 
 			        break;
 			    case "PL-PlugValve":
 			        
 			        if ( $size[$i] < 6 ) {
-							$costo_interrupcion_negocio [] = 1 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 1 * 2000 * (float) $size[$i];
 						}else{
-							$costo_interrupcion_negocio [] = 3 * 2000 * (int) $size[$i];
+							$costo_interrupcion_negocio [] = 3 * 2000 * (float) $size[$i];
 						}
 
 			        break;			    
 		}
 
-	}
-	var_dump($costo_interrupcion_negocio);
+	}	
 
 	return $costo_interrupcion_negocio;
 
@@ -1307,8 +1312,9 @@ public function calcular_consecuencia_financiera_perdida_contencion(){
 	$length = count($calificacion_mantenibilidad);				
 
 	for($i;$i<$length;$i++) {
-		$consecuencia_financiera[] =  ($costo_dano_componente[$i] + $costo_interrupcion_negocio[$i]  + $costo_lesion_potencial[$i] +  $costo_limpieza_medio_ambiente[$i]  ) * $calificacion_mantenibilidad[$i] ;
+		$consecuencia_financiera[] =  ($costo_dano_componente[$i] + $costo_interrupcion_negocio[$i]  + $costo_lesion_potencial[$i] +  $costo_limpieza_medio_ambiente[$i]  ) * (float)$calificacion_mantenibilidad[$i] ;
 	}
+
 
 
 	return $consecuencia_financiera;
@@ -1356,6 +1362,8 @@ public function calcular_valores_matriz(){
 
 		$valoracion_riesgo[] = $string;
 	}
+
+	$this->guardarlog( "Se ha calculado exitosamente la matriz RAM" );
 
 	return $valoracion_riesgo;
 } 
@@ -1633,7 +1641,7 @@ public function retornar_campos_matriz(){
 	$cont++;
 	}
 
-	echo count($_6F). "--". count($_6E) . "--". count($_6D) . "--".count($_6C)  . "--". count($_6B) . "--".count($_6A) ;
+/*	echo count($_6F). "--". count($_6E) . "--". count($_6D) . "--".count($_6C)  . "--". count($_6B) . "--".count($_6A) ;
 	echo "<br>";
 	echo count($_5F). "--". count($_5E) . "--". count($_5D) . "--".count($_5C)  . "--". count($_5B) . "--".count($_5A) ;
 	echo "<br>";
@@ -1643,10 +1651,19 @@ public function retornar_campos_matriz(){
 	echo "<br>";
 	echo count($_2F). "--". count($_2E) . "--". count($_2D) . "--".count($_2C)  . "--". count($_2B) . "--".count($_2A) ;
 	echo "<br>";
-	echo count($_1F). "--". count($_1E) . "--". count($_1D) . "--".count($_1C)  . "--". count($_1B) . "--".count($_1A) ;
+	echo count($_1F). "--". count($_1E) . "--". count($_1D) . "--".count($_1C)  . "--". count($_1B) . "--".count($_1A) ;*/
 	
-
+return array($_6F , $_6E , $_6D, $_6C, $_6B, $_6A, $_5F , $_5E , $_5D, $_5C, $_5B, $_5A, $_4F , $_4E , $_4D, $_4C, $_4B, $_4A, $_3F , $_3E , $_3D, $_3C, $_3B, $_3A, $_2F , $_2E , $_2D, $_2C, $_2B, $_2A , $_1F , $_1E , $_1D, $_1C, $_1B, $_1A);
 }
+
+
+public function guardarlog($accion){
+
+        date_default_timezone_set("America/Bogota"); 
+        $fechareg  = date("Y-m-d H:i:s");        
+        $query = $this->db->prepare("INSERT INTO loghistory ( accion , fecha) VALUES ( '$accion' , '$fechareg' )");  
+        $query->execute();
+    }
      
 
 }

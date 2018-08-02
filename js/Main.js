@@ -5,8 +5,18 @@ jQuery(document).ready(function(e){
 	});
 
 
-	submitForms = function(){
-	    
+	submitForms = function(){	    
 	    document.getElementById("form2").submit();
 	}
+
+	$('#accionar').click(function(){		  
+		  $('#tablainformativa').toggle();		  
+		});
+
+	$('.boton').on('click',function(){
+		  $('.datos:visible').slideToggle('fast');
+		  $('.datos#Info'+$(this).attr('id')).slideToggle('fast');
+		})
+	
+
 });
